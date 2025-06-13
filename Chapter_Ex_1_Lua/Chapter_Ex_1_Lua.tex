@@ -1,0 +1,475 @@
+\documentclass[aspectratio=169]{ctexbeamer}
+\definecolor{urls}{RGB}{137, 180, 250}
+\definecolor{link_text}{RGB}{245, 224, 220}
+\hypersetup{
+  colorlinks,
+  linkcolor=, % This config controls the jumps inside the pdf
+  urlcolor=urls,
+}
+\renewcommand{\UrlFont}{\ttfamily\scriptsize}
+
+\usetheme{AnnArbor}
+\usepackage[style=Mocha,accent=Rosewater]{beamercolorthemecatppuccin}
+
+\usefonttheme{serif}
+\usefonttheme{professionalfonts}
+
+\usepackage[T1]{fontenc}
+\setmainfont{LXGW WenKai}
+% \setmainfont{Cascadia Code NF}
+% \setsansfont{}
+\setmonofont{Cascadia Code NF}
+\usepackage{xeCJK}
+\setCJKmainfont{LXGW WenKai}
+% \setCJKmainfont{}
+\setCJKmonofont{Cascadia Code NF}
+\newcommand{\nerd}[1]{\texttt{#1}}
+\setmonofont{Cascadia Code NF}[
+  Contextuals=Alternate
+]
+
+\PassOptionsToPackage{hyphens}{url}
+% \usepackage{ulem}
+\usepackage{graphicx}
+%\usepackage{wrapfig}
+\usepackage{pifont} % Symbols used as itemize symbols
+\usepackage{enumitem}
+\setlist[itemize,1]{label={\small\color[RGB]{242, 205, 205}\ding{111}}}
+\setlist[itemize,2]{label={\footnotesize\color[RGB]{242, 205, 205}\ding{111}}}
+\setlist[itemize,3]{label={\scriptsize\color[RGB]{242, 205, 205}\ding{111}}}
+\usepackage{float}
+\usepackage{booktabs}
+
+\setbeamerfont{footnote}{size=\tiny}
+\setbeamertemplate{footnote}{%
+  \color[RGB]{108, 112, 134}%
+  \insertfootnotetext%
+}
+\setlength{\footnotesep}{0.3\baselineskip}
+\newcommand{\refnote}[1]{\footnotetext{#1}}
+
+\usetheme{AnnArbor}
+
+\usepackage{pifont}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{listings}
+\lstdefinestyle{bash}{
+  alsoletter=-,
+  keywordstyle=[2]{\color[RGB]{243, 139, 168}},
+  morekeywords=[2]{sudo},
+  keywordstyle=[3]{\color[RGB]{166, 227, 161}},
+  morekeywords=[3]{add-apt-repository, apt-get, apt},
+  keywordstyle=[4]{\color[RGB]{250, 179, 135}},
+  morekeywords=[4]{install},
+}
+\lstdefinestyle{lua}{
+  alsoletter=-,
+  keywordstyle=[2]{\color[RGB]{137, 180, 250}},
+  morekeywords=[2]{name, priority, opts, config, dependencies, submodules, main, version, init, number, boolean, opts_extend},
+  keywordstyle=[3]{\color[RGB]{180, 190, 254}},
+  morekeywords=[3]{fun, setup, ensure_installed, highlight, indent, enable},
+  keywordstyle=[4]{\color[RGB]{250, 179, 135}},
+  morekeywords=[4]{},
+}
+\lstdefinestyle{path}{
+  alsoletter=~,
+  basicstyle={\footnotesize\ttfamily\color[RGB]{147, 153, 178}\itshape},
+}
+\lstset{
+  language={[5.1]lua},
+  style=lua,
+  basicstyle=\footnotesize\ttfamily,
+  breaklines=true,
+  showstringspaces=false,
+  breakatwhitespace=true,
+  keywordstyle=\color[RGB]{245, 169, 127},
+  numberstyle={\ttfamily\color[RGB]{110, 115, 141}},
+  commentstyle={\color[RGB]{147, 153, 178}\itshape},
+  stringstyle={\color[RGB]{166, 218, 149}},
+}
+% NOTE: \lstinline{} command does not support background color
+\lstdefinestyle{nvim}{
+  alsoletter=:,
+  keywordstyle=[3]{\color[RGB]{166, 227, 161}},
+  morekeywords=[3]{:Tutor, :help}, % ChkTeX 26
+}
+
+\newcommand{\TODO}[1]{\textcolor{red}{TODO\@: #1} }
+
+% \newcommand{\link}[3][]{\href{#3}{#2}\footnote[#1]{\url{#3}}}
+\newcommand{\link}[3][]{\href{#3}{#2\textsuperscript{\nerd{}}}}
+
+\title{Neovim从入门到出门（番外篇）}
+\subtitle{1. Lua语言配置}
+\author{Jacky-Lzx}
+\date{\today}
+
+\usepackage{tikz}
+\titlegraphic {
+  \begin{tikzpicture}[overlay,remember picture]
+    \node at (-6, 4.5){
+      \includegraphics[height=1cm]{./Figures/Neovim_logo.png}
+    };
+    \node at (6, 4.5){
+      \includegraphics[height=1cm]{./Figures/Catppuccin_logo.png}
+    };
+  \end{tikzpicture}
+}
+
+\usepackage{makecell}
+
+% ChkTeX-file 19
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+\begin{frame}{大纲}
+  \tableofcontents
+\end{frame}
+% Current section
+\AtBeginSection[ ] {
+  \begin{frame}{大纲}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\section{Lazy.nvim插件配置（二）}
+
+\begin{frame}{Lazy.nvim插件配置（二）}
+  \begin{itemize}
+    \item 关于lazy.nvim如何配置插件的内容在第二节中已经介绍
+    \item 现存的问题
+      \begin{itemize}
+        \item 一个语言相关的配置散布在多个文件的多个配置中，难以维护
+        \item 例如，Lua语言对应的配置设置有
+          \begin{itemize}
+            \item mason.nvim的配置
+            \item conform.nvim的配置
+            \item lazydev.nvim插件
+            \item nvim-lspconfig的配置
+          \end{itemize}
+      \end{itemize}
+    \item 解决方法
+      \begin{itemize}
+        \item 将所有Lua语言相关的配置集中到一个文件中
+        \item 使用插件重载的方法，使涉及到的通用插件不受影响
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{插件重载}
+  \begin{itemize}
+    \item 推荐阅读：AstroNvim对于自定义插件配置的描述
+
+      \url{https://docs.astronvim.com/configuration/customizing_plugins}
+    \item 插件重载
+      \begin{itemize}
+        \item 当配置文件中存在两个及以上同一个插件的配置表时，lazy.nvim如何确定该插件的配置方式
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{插件重载 - 示例}
+  \begin{columns}
+    \fontsize{8pt}{10pt}\selectfont
+
+    \begin{column}[t]{0.5\linewidth}
+      \begin{itemize}
+        \item 假设我们在两个文件中对nvim-treesitter这个插件编写了配置
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/lsp.lua
+-- Loaded first
+{
+  "nvim-treesitter/nvim-treesitter",
+  opts = {
+    ensure_installed = { "lua", "vim" },
+    highlight = { enable = true },
+  },
+}
+
+-- ./lua/plugins/lang/python.lua
+-- Loaded later
+{
+  "nvim-treesitter/nvim-treesitter",
+  opts = {
+    ensure_installed = { "python" },
+    highlight = { enable = false },
+    indent = { enable = false },
+  },
+}
+          \end{lstlisting}
+      \end{itemize}
+    \end{column}
+
+    \begin{column}[t]{0.5\linewidth}
+      \begin{itemize}
+        \item 在lazy.nvim中的最终配置
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+{
+  "nvim-treesitter/nvim-treesitter",
+  opts = {
+    ensure_installed = { "python" },
+    highlight = { enable = false },
+    indent = { enable = false },
+  },
+}
+          \end{lstlisting}
+        \item 错误：\lstinline{ensure_installed}的值被覆盖
+        \item 错误原因：lazy.nvim在融合插件配置时，会将table类型的配置项进行合并，将其他类型的配置项进行覆盖
+          \begin{itemize}
+            \item \lstinline{opts}：进行合并
+            \item \lstinline{highlight}：进行合并
+            \item \lstinline{indent}：进行合并
+            \item \lstinline{ensure_installed}：list类型，进行覆盖
+          \end{itemize}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{插件重载 - 解决方法一}
+  \begin{columns}
+    \begin{column}{0.5\linewidth}
+      \begin{itemize}
+        \item 解决方法一
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/lsp.lua
+opts = {
+  ensure_installed = { "lua", "vim" },
+}
+
+-- ./lua/plugins/lang/python.lua
+opts = function(_, opts)
+  table.insert(opts.ensure_installed, "python")
+end
+          \end{lstlisting}
+        \item 最终效果
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+opts = {
+  ensure_installed = { "lua", "vim", "python" },
+}
+          \end{lstlisting}
+      \end{itemize}
+    \end{column}
+
+    \begin{column}{0.5\linewidth}
+      \begin{itemize}
+        \item 使用\lstinline{opts}函数来修改配置
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+opts = function(_, opts)
+  -- ...
+end
+          \end{lstlisting}
+          \begin{itemize}
+            \item 若函数无返回值，则lazy.nvim会将\lstinline{opts}作为最终的\lstinline{opts}配置
+            \item 若函数有返回值，则lazy.nvim会将返回值作为最终的\lstinline{opts}配置
+          \end{itemize}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{插件重载 - 解决方法二}
+  \begin{columns}
+    \begin{column}{0.5\linewidth}
+      \begin{itemize}
+        \item 解决方法二
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/lsp.lua
+opts = {
+  ensure_installed = { "lua", "vim" },
+},
+opts_extend = { "ensure_installed" },
+
+-- ./lua/plugins/lang/python.lua
+opts = {
+  ensure_installed = { "python" },
+}
+opts_extend = { "ensure_installed" },
+          \end{lstlisting}
+        \item 最终效果
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+opts = {
+  ensure_installed = { "lua", "vim", "python" },
+}
+          \end{lstlisting}
+      \end{itemize}
+    \end{column}
+
+    \begin{column}{0.5\linewidth}
+      \begin{itemize}
+        \item 使用\lstinline{opts_extend}来指定需要融合的list项
+        \item 指定的list项将进行融合，而不是覆盖
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Lua语言相关的插件配置}
+
+\begin{frame}[fragile]{nvim-treesitter}
+  \begin{columns}
+    \begin{column}[t]{0.5\linewidth}
+      \begin{itemize}
+        \item 基础设置
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/treesitter.lua
+{
+  "nvim-treesitter/nvim-treesitter",
+  opts = {
+    auto_install = true,
+    ensure_installed = { "c", "vim", "vimdoc", "query", "elixir", "heex", "javascript", "html" },
+    sync_install = false,
+    highlight = { enable = true },
+    indent = { enable = true },
+  },
+  opts_extend = { "ensure_installed" },
+},
+          \end{lstlisting}
+      \end{itemize}
+    \end{column}
+
+    \begin{column}[t]{0.5\linewidth}
+      \begin{itemize}
+        \item Lua语言设置
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/lang/lua.lua
+{
+  "nvim-treesitter/nvim-treesitter",
+  optional = true,
+  opts = {
+    ensure_installed = { "lua" },
+  },
+  opts_extend = { "ensure_installed" },
+},
+          \end{lstlisting}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{mason.nvim}
+  \begin{columns}
+    \begin{column}[t]{0.5\linewidth}
+      \begin{itemize}
+        \item 基础设置
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/lsp.lua
+{
+  "williamboman/mason.nvim",
+  opts = {
+    ensure_installed = {},
+  },
+  opts_extend = { "ensure_installed" },
+  config = function(_, opts)
+    -- ...
+  end,
+},
+          \end{lstlisting}
+      \end{itemize}
+    \end{column}
+
+    \begin{column}[t]{0.5\linewidth}
+      \begin{itemize}
+        \item Lua语言设置
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/lang/lua.lua
+{
+  "williamboman/mason.nvim",
+  optional = true,
+  opts = {
+    ensure_installed = {
+      "lua-language-server",
+      "stylua",
+    },
+  },
+  opts_extend = { "ensure_installed" },
+},
+          \end{lstlisting}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{conform.nvim}
+  \begin{columns}
+    \begin{column}[t]{0.5\linewidth}
+      \begin{itemize}
+        \item 基础设置
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/lsp.lua
+{
+  "stevearc/conform.nvim",
+  event = "BufWritePre",
+  opts = {
+    formatters_by_ft = {
+      ["_"] = { "trim_whitespace" },
+    },
+    -- ...
+  },
+  init = function()
+    -- ...
+  end,
+},
+          \end{lstlisting}
+      \end{itemize}
+    \end{column}
+
+    \begin{column}[t]{0.5\linewidth}
+      \begin{itemize}
+        \item Lua语言设置
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/lang/lua.lua
+{
+  "stevearc/conform.nvim",
+  optional = true,
+  opts = {
+    formatters_by_ft = {
+      lua = { "stylua" },
+    },
+  },
+},
+          \end{lstlisting}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{lazydev.nvim}
+  \begin{itemize}
+    \item lazydev.nvim从lsp.lua文件移至lua.lua文件中
+      \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/lang/lua.lua
+{
+  "folke/lazydev.nvim",
+  ft = "lua", -- only load on lua files
+  opts = {
+    library = {
+      -- See the configuration section for more details. Load luvit types when the `vim.uv` word is found
+      { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+    },
+  },
+},
+      \end{lstlisting}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \begin{itemize}
+    \item 感谢：
+      \begin{itemize}
+        \item \link{Catppuccin}{https://catppuccin.com/} \includegraphics[height=10pt]{./Figures/Catppuccin_logo.png}
+        \item \link{Catppuccin for beamer}{https://github.com/atticus-sullivan/beamercolortheme}
+      \end{itemize}
+      \vspace{0.5cm}
+    \item 本教程的全部材料可以在我的Github上找到
+      \begin{itemize}
+        \item Slides: \url{https://github.com/Jacky-Lzx/nvim.tutorial.slides}
+        \item Config: \url{https://github.com/Jacky-Lzx/nvim.tutorial.config}
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\end{document}

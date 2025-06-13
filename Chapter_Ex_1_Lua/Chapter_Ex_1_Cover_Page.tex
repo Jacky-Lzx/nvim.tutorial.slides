@@ -1,0 +1,122 @@
+\documentclass[17pt]{ctexbeamer}
+% \documentclass[aspectratio=169,17pt]{ctexbeamer}
+\definecolor{urls}{RGB}{137, 180, 250}
+\definecolor{link_text}{RGB}{245, 224, 220}
+\hypersetup{
+  colorlinks,
+  linkcolor=link_text,
+  urlcolor=urls,
+}
+\renewcommand{\UrlFont}{\ttfamily\scriptsize}
+
+\usetheme{AnnArbor}
+\usepackage[style=Mocha,accent=Rosewater]{beamercolorthemecatppuccin}
+
+\usefonttheme{serif}
+\usefonttheme{professionalfonts}
+
+\usepackage[T1]{fontenc}
+\setmainfont{LXGW WenKai}
+% \setmainfont{Cascadia Code NF}
+% \setsansfont{}
+\setmonofont{Cascadia Code NF}
+\usepackage{xeCJK}
+\setCJKmainfont{LXGW WenKai}
+% \setCJKmainfont{}
+\setCJKmonofont{Cascadia Code NF}
+\newcommand{\nerd}[1]{\texttt{#1}}
+\setmonofont{Cascadia Code NF}[
+  Contextuals=Alternate
+]
+
+\PassOptionsToPackage{hyphens}{url}
+% \usepackage{ulem}
+\usepackage{graphicx}
+%\usepackage{wrapfig}
+\usepackage{pifont} % Symbols used as itemize symbols
+\usepackage{enumitem}
+\setlist[itemize,1]{label={\small\color[RGB]{242, 205, 205}\ding{111}}}
+\setlist[itemize,2]{label={\footnotesize\color[RGB]{242, 205, 205}\ding{111}}}
+\usepackage{float}
+\usepackage{booktabs}
+
+\setbeamerfont{footnote}{size=\tiny}
+\setbeamertemplate{footnote}{%
+  \color[RGB]{108, 112, 134}%
+  \insertfootnotetext%
+}
+\setlength{\footnotesep}{0.3\baselineskip}
+\newcommand{\refnote}[1]{\footnotetext{#1}}
+
+\usetheme{AnnArbor}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{listings}
+\lstdefinestyle{bash}{
+  alsoletter=-,
+  keywordstyle=[2]{\color[RGB]{243, 139, 168}},
+  morekeywords=[2]{sudo},
+  keywordstyle=[3]{\color[RGB]{166, 227, 161}},
+  morekeywords=[3]{add-apt-repository, apt-get, apt},
+  keywordstyle=[4]{\color[RGB]{250, 179, 135}},
+  morekeywords=[4]{install},
+}
+\lstset{
+  language=bash,
+  style=bash,
+  basicstyle=\footnotesize\ttfamily,
+  breaklines=true,
+  showstringspaces=false,
+  breakatwhitespace=true,
+  keywordstyle=\color[RGB]{245, 169, 127},
+  numberstyle={\ttfamily\color[RGB]{110, 115, 141}},
+  commentstyle={\color[RGB]{147, 153, 178}\itshape},
+  stringstyle={\color[RGB]{166, 218, 149}},
+}
+% NOTE: \lstinline{} command does not support background color
+\lstdefinestyle{nvim}{
+  alsoletter=:,
+  keywordstyle=[3]{\color[RGB]{166, 227, 161}},
+  morekeywords=[3]{:Tutor, :help}, % ChkTeX 26
+}
+
+\newcommand{\TODO}[1]{\textcolor{red}{TODO\@: #1} }
+
+% \newcommand{\link}[3][]{\href{#3}{#2}\footnote[#1]{\url{#3}}}
+\newcommand{\link}[3][]{\href{#3}{#2\textsuperscript{\nerd{}}}}
+
+% \defbeamertemplate*{title page}{customized}[1][]
+% {
+%   \usebeamerfont{title}\inserttitle\par
+%   \usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par
+%   \bigskip
+%   \usebeamerfont{author}\insertauthor\par
+%   \usebeamerfont{institute}\insertinstitute\par
+%   \usebeamerfont{date}\insertdate\par
+%   \usebeamercolor[fg]{titlegraphic}\inserttitlegraphic
+% }
+
+\title{Neovim从入门到出门（番外篇）}
+\subtitle{1. Lua语言配置}
+\author{Jacky-Lzx}
+\date{2025}
+
+\usepackage{tikz}
+\titlegraphic {
+  \begin{tikzpicture}[overlay,remember picture]
+    \node at (-4, 3){
+      \includegraphics[height=2cm]{./Figures/Neovim_logo.png}
+    };
+    \node at (4, 3){
+      \includegraphics[height=2cm]{./Figures/Catppuccin_logo.png}
+    };
+  \end{tikzpicture}
+}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\end{document}
