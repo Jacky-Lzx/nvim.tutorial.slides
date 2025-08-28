@@ -1,0 +1,346 @@
+\documentclass[aspectratio=169]{ctexbeamer}
+\definecolor{urls}{RGB}{137, 180, 250}
+\definecolor{link_text}{RGB}{245, 224, 220}
+\hypersetup{
+  colorlinks,
+  linkcolor=, % This config controls the jumps inside the pdf
+  urlcolor=urls,
+}
+\renewcommand{\UrlFont}{\ttfamily\scriptsize}
+
+\usetheme{AnnArbor}
+\usepackage[style=Mocha,accent=Rosewater]{beamercolorthemecatppuccin}
+
+\usefonttheme{serif}
+\usefonttheme{professionalfonts}
+
+\usepackage[T1]{fontenc}
+\setmainfont{LXGW WenKai}
+% \setmainfont{Cascadia Code NF}
+% \setsansfont{}
+\setmonofont{Cascadia Code NF}
+\usepackage{xeCJK}
+\setCJKmainfont{LXGW WenKai}
+% \setCJKmainfont{}
+\setCJKmonofont{Cascadia Code NF}
+\newcommand{\nerd}[1]{\texttt{#1}}
+\setmonofont{Cascadia Code NF}[
+  Contextuals=Alternate
+]
+
+\PassOptionsToPackage{hyphens}{url}
+% \usepackage{ulem}
+\usepackage{graphicx}
+%\usepackage{wrapfig}
+\usepackage{pifont} % Symbols used as itemize symbols
+\usepackage{enumitem}
+\setlist[itemize,1]{label={\small\color[RGB]{242, 205, 205}\ding{111}}}
+\setlist[itemize,2]{label={\footnotesize\color[RGB]{242, 205, 205}\ding{111}}}
+\setlist[itemize,3]{label={\scriptsize\color[RGB]{242, 205, 205}\ding{111}}}
+\usepackage{float}
+\usepackage{booktabs}
+
+\setbeamerfont{footnote}{size=\tiny}
+\setbeamertemplate{footnote}{%
+  \color[RGB]{108, 112, 134}%
+  \insertfootnotetext%
+}
+\setlength{\footnotesep}{0.3\baselineskip}
+\newcommand{\refnote}[1]{\footnotetext{#1}}
+
+\usetheme{AnnArbor}
+
+\usepackage{pifont}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{listings}
+\lstdefinestyle{bash}{
+  alsoletter=-,
+  keywordstyle=[2]{\color[RGB]{243, 139, 168}},
+  morekeywords=[2]{sudo},
+  keywordstyle=[3]{\color[RGB]{166, 227, 161}},
+  morekeywords=[3]{add-apt-repository, apt-get, apt},
+  keywordstyle=[4]{\color[RGB]{250, 179, 135}},
+  morekeywords=[4]{install},
+}
+\lstdefinestyle{lua}{
+  alsoletter=-,
+  keywordstyle=[2]{\color[RGB]{137, 180, 250}},
+  morekeywords=[2]{name, priority, opts, config, dependencies, submodules, main, version, init, number,
+  boolean, opts_extend},
+  keywordstyle=[3]{\color[RGB]{180, 190, 254}},
+  morekeywords=[3]{fun, setup, ensure_installed, highlight, indent, enable},
+  keywordstyle=[4]{\color[RGB]{250, 179, 135}},
+  morekeywords=[4]{},
+}
+\lstdefinestyle{path}{
+  alsoletter=~,
+  basicstyle={\footnotesize\ttfamily\color[RGB]{147, 153, 178}\itshape},
+}
+\lstset{
+  language={[5.1]lua},
+  style=lua,
+  basicstyle=\footnotesize\ttfamily,
+  breaklines=true,
+  showstringspaces=false,
+  breakatwhitespace=true,
+  keywordstyle=\color[RGB]{245, 169, 127},
+  numberstyle={\ttfamily\color[RGB]{110, 115, 141}},
+  commentstyle={\color[RGB]{147, 153, 178}\itshape},
+  stringstyle={\color[RGB]{166, 218, 149}},
+}
+% NOTE: \lstinline{} command does not support background color
+\lstdefinestyle{nvim}{
+  alsoletter=:,
+  keywordstyle=[3]{\color[RGB]{166, 227, 161}},
+  morekeywords=[3]{:Tutor, :help}, % ChkTeX 26
+}
+
+\newcommand{\TODO}[1]{\textcolor{red}{TODO\@: #1} }
+
+% \newcommand{\link}[3][]{\href{#3}{#2}\footnote[#1]{\url{#3}}}
+\newcommand{\link}[3][]{\href{#3}{#2\textsuperscript{\nerd{}}}}
+
+\title{Neovim从入门到出门（番外篇）}
+\subtitle{2. Python语言配置}
+\author{Jacky-Lzx}
+\date{\today}
+
+\usepackage{tikz}
+\titlegraphic {
+  \begin{tikzpicture}[overlay,remember picture]
+    \node at (-6, 4.5){
+      \includegraphics[height=1cm]{./Figures/Neovim_logo.png}
+    };
+    \node at (6, 4.5){
+      \includegraphics[height=1cm]{./Figures/Catppuccin_logo.png}
+    };
+    \node at (0, 0){
+      \includegraphics[height=1cm]{./Figures/Python_logo.png}
+    };
+  \end{tikzpicture}
+}
+
+\usepackage{makecell}
+
+% ChkTeX-file 19
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+\begin{frame}{大纲}
+  \tableofcontents
+\end{frame}
+% Current section
+\AtBeginSection[ ] {
+  \begin{frame}{大纲}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\section{Python相关工具}
+
+\begin{frame}{Python相关工具}
+
+  \begin{itemize}
+    \item \link{ruff}{https://github.com/astral-sh/ruff}: python的linter和formatter
+    \item
+      \link{pyright}{https://github.com/microsoft/pyright} 和
+      \link{basedpyright}{https://github.com/DetachHead/basedpyright}:
+      python的LSP
+
+    \item \link{venv-selector.nvim}{https://github.com/linux-cultist/venv-selector.nvim}: 切换python environment
+  \end{itemize}
+
+\end{frame}
+
+\section{Python插件配置}
+
+\begin{frame}[fragile]{nvim-treesitter}
+  \begin{columns}
+    \begin{column}[t]{0.5\linewidth}
+      \begin{itemize}
+        \item 基础设置
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/treesitter.lua
+{
+  "nvim-treesitter/nvim-treesitter",
+  opts = {
+    auto_install = true,
+    ensure_installed = { "c", "vim", "vimdoc", "query", "elixir", "heex", "javascript", "html" },
+    sync_install = false,
+    highlight = { enable = true },
+    indent = { enable = true },
+  },
+  opts_extend = { "ensure_installed" },
+},
+          \end{lstlisting}
+      \end{itemize}
+    \end{column}
+
+    \begin{column}[t]{0.5\linewidth}
+      \begin{itemize}
+        \item Python语言设置
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/lang/python.lua
+{
+  "nvim-treesitter/nvim-treesitter",
+  optional = true,
+  opts = {
+    ensure_installed = { "python" },
+  },
+  opts_extend = { "ensure_installed" },
+},
+          \end{lstlisting}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{mason.nvim}
+  \begin{columns}
+    \begin{column}[t]{0.5\linewidth}
+      \begin{itemize}
+        \item 基础设置
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/lsp.lua
+{
+  "williamboman/mason.nvim",
+  opts = {
+    ensure_installed = {},
+  },
+  opts_extend = { "ensure_installed" },
+  config = function(_, opts)
+    -- ...
+  end,
+},
+          \end{lstlisting}
+      \end{itemize}
+    \end{column}
+
+    \begin{column}[t]{0.5\linewidth}
+      \begin{itemize}
+        \item Python语言设置
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/lang/python.lua
+{
+  "mason-org/mason.nvim",
+  optional = true,
+  opts_extend = { "ensure_installed" },
+  opts = {
+    ensure_installed = { "ruff", "pyright", "basedpyright" }
+  },
+},
+          \end{lstlisting}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{conform.nvim}
+  \begin{columns}
+    \begin{column}[t]{0.5\linewidth}
+      \begin{itemize}
+        \item 基础设置
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/lsp.lua
+{
+  "stevearc/conform.nvim",
+  event = "BufWritePre",
+  opts = {
+    formatters_by_ft = {
+      ["_"] = { "trim_whitespace" },
+    },
+    -- ...
+  },
+  init = function()
+    -- ...
+  end,
+},
+          \end{lstlisting}
+      \end{itemize}
+    \end{column}
+
+    \begin{column}[t]{0.5\linewidth}
+      \begin{itemize}
+        \item Python语言设置
+          \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/lang/python.lua
+{
+  "stevearc/conform.nvim",
+  optional = true,
+  opts = {
+    formatters_by_ft = {
+      python = { "ruff_organize_imports", "ruff_format" },
+    },
+  },
+},
+          \end{lstlisting}
+          \begin{itemize}
+              \footnotesize
+            \item ruff\_organize\_import: import排序
+            \item ruff\_format: 代码格式化
+          \end{itemize}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{nvim-lint}
+  \begin{itemize}
+    \item Python语言设置
+      \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/lang/python.lua
+{
+  "mfussenegger/nvim-lint",
+  optional = true,
+  opts = {
+    linters_by_ft = {
+      python = { "ruff" },
+    },
+  },
+},
+      \end{lstlisting}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{\link{venv-selector.nvim}{https://github.com/linux-cultist/venv-selector.nvim}}
+  \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+-- ./lua/plugins/lang/python.lua
+{
+  "linux-cultist/venv-selector.nvim",
+  branch = "regexp", -- Use this branch for the new version
+  cmd = "VenvSelect",
+  opts = {
+    settings = {
+      options = {
+        notify_user_on_venv_activation = true,
+      },
+    },
+  },
+  --  Call config for python files and load the cached venv automatically
+  ft = "python",
+  keys = { { "<leader>cv", "<CMD>VenvSelect<CR>", desc = "Select VirtualEnv", ft = "python" } },
+},
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}
+  \begin{itemize}
+    \item 感谢：
+      \begin{itemize}
+        \item \link{Catppuccin}{https://catppuccin.com/}
+          \includegraphics[height=10pt]{./Figures/Catppuccin_logo.png}
+        \item \link{Catppuccin for beamer}{https://github.com/atticus-sullivan/beamercolortheme}
+      \end{itemize}
+      \vspace{0.5cm}
+    \item 本教程的全部材料可以在我的Github上找到
+      \begin{itemize}
+        \item Slides: \url{https://github.com/Jacky-Lzx/nvim.tutorial.slides}
+        \item Config: \url{https://github.com/Jacky-Lzx/nvim.tutorial.config}
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\end{document}
